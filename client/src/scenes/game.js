@@ -44,12 +44,18 @@ export default class Game extends Phaser.Scene {
             self.isPlayerA = true;
         })
 
-        this.socket.on('dealCards', function () {
-            self.dealer.dealCards();
-            self.dealText.disableInteractive();
+        this.socket.on('dealCards', function (playerACards, playerBCards, isPlayerA) {
+            if (self.isPlayerA) {
+                self.dealer.dealCards(playerBCards);
+                self.dealText.disableInteractive();
+            } else {
+                self.dealer.dealCards(playerACards);
+                self.dealText.disableInteractive();
+            }
         })
 
         this.socket.on('cardPlayed', function (gameObject, isPlayerA) {
+            console.log(isPlayerA);
             if (isPlayerA !== self.isPlayerA) {
                 let sprite = gameObject.textureKey;
                 self.opponentCards.shift().destroy();
@@ -62,7 +68,7 @@ export default class Game extends Phaser.Scene {
         this.dealText = this.add.text(75, 350, ['DEAL CARDS']).setFontSize(18).setFontFamily('"Press Start 2P"').setColor('White').setInteractive();
 
         this.dealText.on('pointerdown', function () {
-            self.socket.emit("dealCards");
+            self.socket.emit("dealCards", self.isPlayerA);
         })
 
         this.dealText.on('pointerover', function () {

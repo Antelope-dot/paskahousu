@@ -2,17 +2,12 @@ import Card from './cards';
 
 export default class Dealer {
     constructor(scene) {
-        this.dealCards = () => {
-            let playerSprite;
-            let opponentSprite;
-            if (scene.isPlayerA) {
-                playerSprite = '14OfSpades';
-                opponentSprite = 'cardBack';
-            } else {
-                playerSprite = '14OfSpades';
-                opponentSprite = 'cardBack';
-            };
-            for (let i = 0; i < 7; i++) {
+        this.dealCards = (cards) => {
+
+            let opponentSprite = 'cardBack';
+            for (let i = 0; i < 5; i++) {
+                let playerSprite;
+                playerSprite = cards.pop();
                 let playerCard = new Card(scene);
                 playerCard.render(475 + (i * 100), 650, playerSprite);
 
