@@ -11,7 +11,14 @@ export default class Game extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image('aceOfSpades', 'assets/cards/ace_of_spades.png');
+        let colors = ["Hearts", "Diamonds", "Spades", "Clubs"]
+        //way this goes is: "number_of_color.png"
+        for (let i = 2;  i <= 14; i++) {
+            for (let color of colors) {
+                this.load.image(`${i}Of${color}`, `assets/cards/${i}_of_${color.toLocaleLowerCase()}.png`)
+            }
+        }
+        //this.load.image('aceOfSpades', 'assets/cards/ace_of_spades.png');
         this.load.image('cardBack', 'assets/card_back.png');
     }
 

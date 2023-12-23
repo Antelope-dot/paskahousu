@@ -6,10 +6,10 @@ export default class Dealer {
             let playerSprite;
             let opponentSprite;
             if (scene.isPlayerA) {
-                playerSprite = 'aceOfSpades';
+                playerSprite = '14OfSpades';
                 opponentSprite = 'cardBack';
             } else {
-                playerSprite = 'aceOfSpades';
+                playerSprite = '14OfSpades';
                 opponentSprite = 'cardBack';
             };
             for (let i = 0; i < 7; i++) {
