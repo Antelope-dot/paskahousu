@@ -53,8 +53,8 @@ io.on('connection', function (socket) {
         io.emit('dealCards', playerACards, playerBCards, isPlayerA);
     });
 
-    socket.on('cardPlayed', function (gameObject, isPlayerA) {
-        io.emit('cardPlayed', gameObject, isPlayerA);
+    socket.on('cardPlayed', function (gameObject, cardValue, isPlayerA) {
+        io.emit('cardPlayed', gameObject, cardValue, isPlayerA);
     });
 
     socket.on('disconnect', function() {

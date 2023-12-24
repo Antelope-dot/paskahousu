@@ -26,6 +26,7 @@ export default class Game extends Phaser.Scene {
         this.isPlayerA = false;
         this.opponentCards = [];
 
+        this.currentCardValue = this.add.text(75, 400, "CURRENT VALUE: ", {fontSize: '16px', fill: '#fff'});
         this.zone = new Zone(this);
         this.dropZone = this.zone.renderZone();
         this.outline = this.zone.renderOutline(this.dropZone);
@@ -54,18 +55,19 @@ export default class Game extends Phaser.Scene {
             }
         })
 
-        this.socket.on('cardPlayed', function (gameObject, isPlayerA) {
-            console.log(isPlayerA);
+        this.socket.on('cardPlayed', function (gameObject, cardValue, isPlayerA) {
             if (isPlayerA !== self.isPlayerA) {
-                let sprite = gameObject.textureKey;
+                let sprite = 'cardBack';
                 self.opponentCards.shift().destroy();
                 self.dropZone.data.values.cards++;
                 let card = new Card(self);
-                card.render(((self.dropZone.x - 350) + (self.dropZone.data.values.cards * 50)), (self.dropZone.y), sprite).disableInteractive();
+                card.render((self.dropZone.x), (self.dropZone.y), sprite).disableInteractive();
             }
+            self.currentCardValue.setText('CURRENT VALUE ' + cardValue);
         })
 
         this.dealText = this.add.text(75, 350, ['DEAL CARDS']).setFontSize(18).setFontFamily('"Press Start 2P"').setColor('White').setInteractive();
+
 
         this.dealText.on('pointerdown', function () {
             self.socket.emit("dealCards", self.isPlayerA);
@@ -97,11 +99,12 @@ export default class Game extends Phaser.Scene {
         })
 
         this.input.on('drop', function (pointer, gameObject, dropZone) {
+            let cardValue = gameObject.texture.key.substring(0, gameObject.texture.key.indexOf('O'));
             dropZone.data.values.cards++;
-            gameObject.x = (dropZone.x - 350) + (dropZone.data.values.cards * 50);
+            gameObject.x = (dropZone.x);
             gameObject.y = dropZone.y;
             gameObject.disableInteractive();
-            self.socket.emit('cardPlayed', gameObject, self.isPlayerA);
+            self.socket.emit('cardPlayed', gameObject, cardValue, self.isPlayerA);
         })
     }
 
