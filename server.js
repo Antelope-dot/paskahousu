@@ -9,6 +9,10 @@ let players = [];
 let colors = ["Hearts", "Diamonds", "Spades", "Clubs"];
 let deck = [];
 
+// Player A == 1
+// Player B == 2
+let currentPlayerTurn = 1;
+
 
 function initDeck() {
     deck = [];
@@ -21,11 +25,11 @@ function initDeck() {
     //Fisher-Yates shuffle to randomize deck
     let currentIndex = deck.length,  randomIndex;
     while (currentIndex > 0) {
-      randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
 
-      [deck[currentIndex], deck[randomIndex]] = [
-        deck[randomIndex], deck[currentIndex]];
+        [deck[currentIndex], deck[randomIndex]] = [
+            deck[randomIndex], deck[currentIndex]];
     }
 }
 
@@ -53,8 +57,19 @@ io.on('connection', function (socket) {
         io.emit('dealCards', playerACards, playerBCards, isPlayerA);
     });
 
-    socket.on('cardPlayed', function (gameObject, cardValue, isPlayerA) {
-        io.emit('cardPlayed', gameObject, cardValue, isPlayerA);
+    socket.on('cardPlayed', function (gameObject, cardValue, isPlayerA, callback) {
+        if ((currentPlayerTurn == 1 && isPlayerA) || (currentPlayerTurn == 2 && !isPlayerA)) {
+
+            if (isPlayerA) {
+                currentPlayerTurn = 2;
+            } else {
+                currentPlayerTurn = 1;
+            }
+            io.emit('cardPlayed', gameObject, cardValue, isPlayerA, currentPlayerTurn);
+            callback({
+                status: "ok"
+            });
+        }
     });
 
     socket.on('disconnect', function() {
